@@ -27,7 +27,7 @@ int main()
   int a3[30];
   test();
   test(3);
-  while(a2>0)
+  for(a1=0,int a5=0;a5<3;a5++,a1++)
   {
     int i=a1;
     a1=3;

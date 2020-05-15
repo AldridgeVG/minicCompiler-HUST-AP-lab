@@ -159,14 +159,18 @@ void display(struct node *T, int indent)
             break;
         case FOR_CONDITION:
             strcpy(T->scope,T->parent->scope);
-            printf("%*cFOR语句条件：\n", indent, ' ');
+            printf("%*cFOR语句条件1：\n", indent, ' ');
             display(T->ptr[0], indent + 3); //显示for循环第一个表达式——初始化
+            printf("%*cFOR语句条件2：\n", indent, ' ');
             display(T->ptr[1], indent + 3); //显示for循环第二个表达式
+            printf("%*cFOR语句条件3：\n", indent, ' ');
             display(T->ptr[2], indent + 3); //显示for循环第三个表达式
             break;
+        case EXP_FOR1_LIST:
+            strcpy(T->scope,T->parent->scope);
         case EXP_FOR3_LIST:
             strcpy(T->scope,T->parent->scope);
-            display(T->ptr[0], indent); //显示for循环第一个表达式——初始化
+            display(T->ptr[0], indent); //显示for循环第一个表达式
             display(T->ptr[1], indent); //显示for循环第二个表达式
             break;
         case DEF_LIST:
@@ -446,6 +450,11 @@ void udisplay(struct node *T, int indent)
             udisplay(T->ptr[0], indent + 3); //显示for循环第一个表达式——初始化
             udisplay(T->ptr[1], indent + 3); //显示for循环第二个表达式
             udisplay(T->ptr[2], indent + 3); //显示for循环第三个表达式
+            break;
+        case EXP_FOR1_LIST:
+            strcpy(T->scope,T->parent->scope);
+            udisplay(T->ptr[0], indent); //显示for循环第一个表达式——初始化
+            udisplay(T->ptr[1], indent); //显示for循环第二个表达式
             break;
         case EXP_FOR3_LIST:
             strcpy(T->scope,T->parent->scope);

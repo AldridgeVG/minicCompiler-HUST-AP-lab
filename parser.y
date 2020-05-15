@@ -22,7 +22,7 @@ void display(struct node *,int);
 };
 
 
-%type  <ptr> program ExtDefList ExtDef  Specifier ExtDecList FuncDec CompSt VarList VarDec  ParamDec Stmt StmtList DefList Def DecList Dec Exp Args ExpForCond ExpFor1 ExpFor2 ExpFor3 ExpFor3List
+%type  <ptr> program ExtDefList ExtDef  Specifier ExtDecList FuncDec CompSt VarList VarDec  ParamDec Stmt StmtList DefList Def DecList Dec Exp Args ExpForCond ExpFor1 ExpFor2 ExpFor3 ExpFor1Atom ExpFor1List ExpFor3List
 
 %token <type_int> INT  
 %token <type_float> FLOAT 
@@ -70,12 +70,6 @@ Specifier:  TYPE    {$$=mknode(TYPE,NULL,NULL,NULL,yylineno);strcpy($$->type_id,
 VarDec:  ID LB INT RB    {$$=mknode(ARRAY,NULL,NULL,NULL,yylineno);strcpy($$->type_id,$1);$$->size=$3;}
         |ID       {$$=mknode(ID,NULL,NULL,NULL,yylineno);strcpy($$->type_id,$1);}   
         ;
-/*VarDec: ID VarDec_replace    {$$=mknode(ID,$2,NULL,NULL,yylineno);strcpy($$->type_id,$1);}   //ID��㣬��ʶ�����Ŵ���Ž���type_id
-        ;
-VarDec_replace: {$$=NULL; }
-                | LB INT RB VarDec_replace {$$=mknode(ARRAY,$4,NULL,NULL,yylineno);strcpy($$->type_id,"ARRAY");$$->size =$2;} //������
-                ;
-*/
 FuncDec: ID LP VarList RP   {$$=mknode(FUNC_DEC,$3,NULL,NULL,yylineno);strcpy($$->type_id,$1);}//�����������$$->type_id
 	|ID LP  RP   {$$=mknode(FUNC_DEC,NULL,NULL,NULL,yylineno);strcpy($$->type_id,$1);}//�����������$$->type_id
         ;  
@@ -149,9 +143,16 @@ Exp:    Exp ASSIGNOP Exp {$$=mknode(ASSIGNOP,$1,$3,NULL,yylineno);strcpy($$->typ
 Args:    Exp COMMA Args    {$$=mknode(ARGS,$1,$3,NULL,yylineno);}
        | Exp               {$$=mknode(ARGS,$1,NULL,NULL,yylineno);}
        ;
-ExpFor1: {$$=NULL; }
+ExpFor1:{$$=NULL; }
+        |ExpFor1List {$$=$1;}
+        ;
+ExpFor1Atom:
+        Specifier Dec {$$=mknode(VAR_DEF,$1,$2,NULL,yylineno);}
         |VarDec ASSIGNOP Exp {$$=mknode(ASSIGNOP,$1,$3,NULL,yylineno);strcpy($$->type_id,"ASSIGNOP");}
         ;
+ ExpFor1List: ExpFor1Atom{$$=$1;}
+        |ExpFor1Atom COMMA ExpFor1List {$$=mknode(EXP_FOR1_LIST,$1,$3,NULL,yylineno);}
+        ; 
 ExpFor2: {$$=NULL; }
         |VarDec RELOP Exp {$$=mknode(RELOP,$1,$3,NULL,yylineno);strcpy($$->type_id,$2);}
         ;
